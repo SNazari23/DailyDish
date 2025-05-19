@@ -9,7 +9,7 @@ DailyDish is a meal planning web application that helps users:
 - Save favorite meals
 
 **Technology Stack**:
-- Frontend: HTML5, CSS, and JavaScript
+- Frontend: HTML, CSS, and JavaScript
 - Backend: Node.js, Express
 - Database: superbase 
 - External API: TheMealDB
@@ -17,16 +17,15 @@ DailyDish is a meal planning web application that helps users:
 
 
 # ⚙️ Prerequisites
--Html 
--Superbase 
--Javascript
--CSS
--
+- Html 
+- Superbase 
+- Javascript
+- CSS
 
 # 🐱 Setup
 Dowland the files on the GitHub repository and run home.html. 
 **Installing**:
--type in a terminal "npm install @supabase/supabase-js".  
+- type in a terminal "npm install @supabase/supabase-js".  
 - downland files on the GitHub repository. 
 
 #  🧪 Testing 
