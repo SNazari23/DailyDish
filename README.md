@@ -1,6 +1,6 @@
 # 🥗DailyDish 🍉
 
-# 📌 Project Description
+## 📌 Project Description
 
 DailyDish is a meal planner website that helps users organize their daily meals. Users can explore a wide variety of meal inspirations, save their favorite dishes, and easily plan their meals for the day—whether it's breakfast, lunch, dinner, or a quick snack.
 
@@ -21,7 +21,7 @@ Meal Planner: Users can organize their saved meals into a daily planner.
 Optimized for Chrome web browser.
 
 # 📜 Developer Manual
-link: https://github.com/SNazari23/DailyDish/blob/mainSNazari23/CMSC-204-Labs-and-Projects/docs/DailyDish_Developer%20Manual.md 
+Link: https://github.com/SNazari23/DailyDish/blob/mainSNazari23/CMSC-204-Labs-and-Projects/docs/DailyDish_Developer%20Manual.md 
 
 
 
