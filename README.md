@@ -20,7 +20,8 @@ Meal Planner: Users can organize their saved meals into a daily planner.
 
 Optimized for Chrome web browser.
 
-📜 Developer Manual
+# 📜 Developer Manual
+link: https://github.com/SNazari23/DailyDish/blob/mainSNazari23/CMSC-204-Labs-and-Projects/docs/DailyDish_Developer%20Manual.md 
 
 
 
