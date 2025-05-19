@@ -1,6 +1,10 @@
 {
-  "scripts": {
-    "build": "next build",
-    "start": "next start"
+    "name": "DailyDish",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+      "react": "^18.2.0",
+      "next": "^13.4.0"
+    }
   }
-}
+  
