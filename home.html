@@ -2,537 +2,1156 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>DailyDish</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>DailyDish - Meal Planner</title>
   <style>
+    :root {
+      --primary-color: black;
+      --primary-hover: black;
+      --secondary-bg: #f0f0f0;
+      --secondary-hover: #e0e0e0;
+      --text-color: #333;
+      --light-text: #666;
+      --border-color: #ddd;
+      --white: #fff;
+      --danger: #f44336;
+    }
+    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f8f9fa;
+      background-color: #f9f9f9;
+      color: var(--text-color);
     }
-    
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 2rem;
-      background-color: #fff;
+      padding: 15px 30px;
+      background: var(--white);
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       position: sticky;
       top: 0;
       z-index: 100;
     }
-    
-    .logo {
-      height: 50px;
-    }
-    
-    .title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #2c3e50;
-      margin: 0;
-    }
-    
-    .controls {
+
+    .logo-container {
       display: flex;
-      gap: 1rem;
-      padding: 1.5rem;
-      background-color: #fff;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      align-items: center;
+      gap: 15px;
     }
-    
-    .search-input {
-      flex: 1;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    
-    .filter-select {
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      background-color: white;
-      font-size: 1rem;
-    }
-    
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      padding: 1rem;
-    }
-    
-    .card {
-      background-color: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
-      cursor: pointer;
-    }
-    
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .card-image {
-      width: 100%;
-      height: 200px;
+
+    .logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
       object-fit: cover;
     }
-    
-    .card-content {
-      padding: 1.25rem;
-    }
-    
-    .card-title {
-      font-size: 1.25rem;
-      margin: 0 0 0.5rem;
-      color: #2c3e50;
-    }
-    
-    .card-meta {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-      color: #7f8c8d;
-    }
-    
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
+
+    .title {
+      font-size: 22px;
       font-weight: 600;
-      margin-right: 0.5rem;
+      color: var(--primary-color);
+      margin: 0;
     }
-    
-    .veg { background-color: #27ae60; color: white; }
-    .non-veg { background-color: #e74c3c; color: white; }
-    .gluten-free { background-color: #f39c12; color: white; }
-    .dairy-free { background-color: #8e44ad; color: white; }
-    
-    .card-details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      padding: 0 1.25rem;
-    }
-    
-    .card.active .card-details {
-      max-height: 1000px;
-      padding: 0 1.25rem 1.25rem;
-    }
-    
-    .detail-section {
-      margin-bottom: 1rem;
-    }
-    
-    .detail-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin: 0 0 0.5rem;
-      color: #34495e;
-      border-bottom: 1px solid #ecf0f1;
-      padding-bottom: 0.25rem;
-    }
-    
-    .ingredients-list, .instructions-list {
-      padding-left: 1.25rem;
-      margin: 0.5rem 0;
-    }
-    
-    .ingredients-list li, .instructions-list li {
-      margin-bottom: 0.25rem;
-      font-size: 0.9rem;
-      color: #34495e;
-    }
-    
-    .save-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-    
-    .save-btn {
-      padding: 0.5rem 0.75rem;
-      font-size: 0.8rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    
-    .save-btn:hover {
-      opacity: 0.9;
-    }
-    
-    .breakfast-btn { background-color: #f6e58d; color: #333; }
-    .lunch-btn { background-color: #7ed6df; color: #333; }
-    .dinner-btn { background-color: #686de0; color: white; }
-    .snacks-btn { background-color: #ff7979; color: white; }
-    .dessert-btn { background-color: #e056fd; color: white; }
-    
-    .saved-notice {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: #27ae60;
+
+    .profile-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
       color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      display: none;
-      z-index: 1;
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 2rem;
-      font-size: 1.2rem;
-      color: #7f8c8d;
-    }
-    
-    .error {
-      color: #e74c3c;
-      text-align: center;
-      padding: 2rem;
-    }
-    
-    .tags-container {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    
-    .tag {
-      background-color: #e0e0e0;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-    }
-    
-    .planner-btn-container {
-      display: flex;
+      align-items: center;
       justify-content: center;
-      margin: 1rem 0;
-    }
-    
-    .planner-btn {
-      background-color: #2ecc71;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      font-size: 1rem;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s;
-      text-decoration: none;
-      display: inline-block;
+      transition: all 0.3s;
+      overflow: hidden;
+      border: 3px solid var(--primary-color);
+      position: relative;
+    }
+
+    .profile-circle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .profile-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 70px;
+      right: 30px;
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      width: 250px;
+      padding: 15px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .profile-dropdown.show {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 15px;
+    }
+
+    .profile-dropdown-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 3px solid var(--primary-color);
+    }
+
+    .profile-dropdown-name {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .profile-dropdown-diet {
+      background: var(--secondary-bg);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .diet-vegan {
+      background: #c8e6c9;
+      color: #2e7d32;
+    }
+
+    .diet-vegetarian {
+      background: #bbdefb;
+      color: #1565c0;
+    }
+
+    .dropdown-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .dropdown-btn:hover {
+      background: var(--secondary-bg);
+    }
+
+    .dropdown-btn.edit {
+      color: var(--primary-color);
+    }
+
+    .dropdown-btn.logout {
+      color: var(--danger);
+    }
+
+    .planner-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--white);
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      padding: 25px;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.3s;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--light-text);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input, 
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--secondary-bg);
+      color: var(--text-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--secondary-hover);
+    }
+
+    /* Calendar styles */
+    .month-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .current-month {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .nav-btn {
+      padding: 8px 16px;
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .day-header {
+      text-align: center;
+      font-weight: 600;
+      padding: 12px;
+      background: var(--secondary-bg);
+      border-radius: 6px;
+    }
+
+    .day {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      min-height: 120px;
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .day:hover {
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .day-number {
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: right;
+    }
+
+    .day.today {
+      border: 2px solid var(--primary-color);
+    }
+
+    .meal-item {
+      padding: 6px 8px;
+      margin: 5px 0;
+      border-radius: 4px;
+      font-size: 13px;
+      position: relative;
+    }
+
+    .breakfast { background-color: #fff9c4; }
+    .lunch { background-color: #c8e6c9; }
+    .dinner { background-color: #bbdefb; }
+    .snacks { background-color: #f8bbd0; }
+    .dessert { background-color: #d1c4e9; }
+
+    .remove-meal {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .meal-item:hover .remove-meal {
+      opacity: 1;
+    }
+
+    /* Week at a glance */
+    .week-at-glance {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .week-at-glance h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+
+    .week-days {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 15px;
+    }
+
+    .week-day {
+      min-width: 220px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      background: var(--white);
+    }
+
+    .week-day h4 {
+      margin: 0 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .empty-day {
+      color: var(--light-text);
+      font-style: italic;
+      font-size: 14px;
+    }
+
+    /* Meal form */
+    .meal-form {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: none;
+    }
+
+    .meal-form h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* Welcome section */
+    .welcome-section {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     
-    .planner-btn:hover {
-      background-color: #27ae60;
+    .welcome-card {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .welcome-card h2 {
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+    
+    .welcome-card p {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 16px;
+    }
+
+    /* ExplorePage and About button styles */
+    .nav-buttons-container {
+    display: flex;
+    gap: 1rem;
+    margin: 20px 0;
+  }
+  
+  .nav-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .nav-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .nav-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Ripple effect */
+  .nav-btn::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+  
+  .nav-btn:focus:not(:active)::after {
+    animation: ripple 0.6s ease-out;
+  }
+  
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(20, 20);
+      opacity: 0;
+    }
+  }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header {
+        padding: 12px 20px;
+      }
+      
+      .title {
+        font-size: 18px;
+      }
+      
+      .profile-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+      }
+      
+      .profile-dropdown {
+        right: 20px;
+        width: 220px;
+      }
+      
+      .calendar {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+      }
+      
+      .day {
+        min-height: 80px;
+        padding: 8px;
+      }
+      
+      .day-number {
+        font-size: 14px;
+      }
+      
+      .meal-item {
+        font-size: 11px;
+        padding: 4px 6px;
+      }
     }
   </style>
 </head>
 <body>
   <header class="header">
-    <img src="https://cdn.vectorstock.com/i/500p/89/68/abstract-logo-of-a-cafe-or-restaurant-spoon-vector-17248968.jpg" alt="Logo" class="logo">
-    <h1 class="title">DailyDish</h1>
-    <div>
-      <!-- Removed the fetch random meals button -->
+    <div class="logo-container">
+      <img
+        src="https://cdn.vectorstock.com/i/500p/89/68/abstract-logo-of-a-cafe-or-restaurant-spoon-vector-17248968.jpg"
+        alt="Logo"
+        class="logo"
+      />
+      <h1 class="title">DailyDish Planner</h1>
+    </div>
+    
+    <div class="profile-circle" id="profileCircle">
+      <!-- Initials or image will be loaded here -->
+    </div>
+    
+    <div class="profile-dropdown" id="profileDropdown">
+      <div class="profile-info" id="profileDropdownContent">
+        <!-- Profile info will be loaded here -->
+      </div>
+      <button class="dropdown-btn edit" id="editProfileBtn">Edit Profile</button>
+      <button class="dropdown-btn logout" id="logoutBtn">Log Out</button>
     </div>
   </header>
 
-  <div class="controls">
-    <input id="searchInput" type="text" placeholder="Search recipes…" class="search-input">
-    <select id="typeFilter" class="filter-select">
-      <option value="">All types</option>
-      <option value="Breakfast">Breakfast</option>
-      <option value="Lunch">Lunch</option>
-      <option value="Dinner">Dinner</option>
-      <option value="Snacks">Snacks</option>
-    </select>
-    <select id="vegFilter" class="filter-select">
-      <option value="">All</option>
-      <option value="veg">Vegetarian</option>
-      <option value="non-veg">Non-Vegetarian</option>
-    </select>
-  </div>
+  <div class="planner-container">
+    <!-- Welcome Section (shown only for new users) -->
+    <div class="welcome-section" id="welcomeSection">
+      <div class="welcome-card">
+        <h2>Welcome to DailyDish!</h2>
+        <p>Let's set up your profile to get started.</p>
+        <button id="startProfileSetup" class="btn btn-primary">Create Profile</button>
+      </div>
+    </div>
 
-  <div class="planner-btn-container">
-    <a href="planner.html" class="planner-btn">Go to Meal Planner</a>
-  </div>
+   
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons-container">
+      <a href="AboutPage.html" class="nav-btn">About</a>
+      <a href="ExplorePage.html" class="nav-btn">Explore Page</a>
+    </div>
 
-  <div id="recipesContainer" class="grid"></div>
-  <div id="loading" class="loading">Loading recipes...</div>
-  <div id="error" class="error" style="display: none;"></div>
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Edit Profile</h3>
+          <button class="close-modal" id="closeModal">&times;</button>
+        </div>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="profileUsername">Username</label>
+            <input type="text" id="profileUsername" placeholder="Enter your username" required>
+          </div>
+          <div class="form-group">
+            <label for="profileDiet">Diet Preference</label>
+            <select id="profileDiet" required>
+              <option value="none">No restrictions</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="vegan">Vegan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="profileImage">Profile Image URL</label>
+            <input type="text" id="profileImage" placeholder="Enter image URL">
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancelProfile">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Calendar Section -->
+    <div class="month-navigation">
+      <button id="prevMonth" class="nav-btn">Previous Month</button>
+      <h2 id="currentMonth" class="current-month">Month Year</h2>
+      <button id="nextMonth" class="nav-btn">Next Month</button>
+    </div>
+
+    <div class="calendar" id="calendar">
+      <!-- Calendar will be generated by JavaScript -->
+    </div>
+
+    <!-- Meal Form -->
+    <div class="meal-form" id="mealForm">
+      <h3>Plan Meals for <span id="selectedDate"></span></h3>
+      <div class="form-group">
+        <label for="mealType">Meal Type:</label>
+        <select id="mealType">
+          <option value="breakfast">Breakfast</option>
+          <option value="lunch">Lunch</option>
+          <option value="dinner">Dinner</option>
+          <option value="snacks">Snacks</option>
+          <option value="dessert">Dessert</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="mealName">Select Meal:</label>
+        <select id="mealName">
+          <!-- Options will be populated by JavaScript -->
+        </select>
+      </div>
+      <div class="form-buttons">
+        <button id="cancelMeal" class="btn btn-secondary">Cancel</button>
+        <button id="saveMeal" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+
+    <!-- Week at a Glance -->
+    <div class="week-at-glance">
+      <h2>This Week at a Glance</h2>
+      <div class="week-days" id="weekView">
+        <!-- Week view will be generated by JavaScript -->
+      </div>
+    </div>
+  </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const recipesContainer = document.getElementById('recipesContainer');
-      const loadingElement = document.getElementById('loading');
-      const errorElement = document.getElementById('error');
-      const searchInput = document.getElementById('searchInput');
-      const typeFilter = document.getElementById('typeFilter');
-      const vegFilter = document.getElementById('vegFilter');
+    // Initialize variables
+    let currentProfile = null;
+    let selectedDate = null;
+    
+    // DOM elements
+    const profileCircle = document.getElementById('profileCircle');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const profileDropdownContent = document.getElementById('profileDropdownContent');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const profileModal = document.getElementById('profileModal');
+    const closeModal = document.getElementById('closeModal');
+    const cancelProfile = document.getElementById('cancelProfile');
+    const profileForm = document.getElementById('profileForm');
+    const profileUsername = document.getElementById('profileUsername');
+    const profileDiet = document.getElementById('profileDiet');
+    const profileImage = document.getElementById('profileImage');
+    const welcomeSection = document.getElementById('welcomeSection');
+    const startProfileSetup = document.getElementById('startProfileSetup');
+    
+    // Calendar elements
+    const calendarEl = document.getElementById('calendar');
+    const currentMonthEl = document.getElementById('currentMonth');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+    const mealFormEl = document.getElementById('mealForm');
+    const selectedDateEl = document.getElementById('selectedDate');
+    const saveMealBtn = document.getElementById('saveMeal');
+    const cancelMealBtn = document.getElementById('cancelMeal');
+    const mealTypeEl = document.getElementById('mealType');
+    const mealNameEl = document.getElementById('mealName');
+    const weekViewEl = document.getElementById('weekView');
+
+    // Load saved meals from localStorage
+    let savedMeals = JSON.parse(localStorage.getItem('savedMeals')) || {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      snacks: [],
+      dessert: []
+    };
+
+    // Store planned meals
+    let plannedMeals = JSON.parse(localStorage.getItem('plannedMeals')) || {};
+
+    // Current date
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
+
+    // Initialize the app
+    function initApp() {
+      // Check if profile exists in localStorage
+      const savedProfile = localStorage.getItem('userProfile');
+      if (savedProfile) {
+        currentProfile = JSON.parse(savedProfile);
+        updateProfileCircle(currentProfile);
+        updateProfileDropdown(currentProfile);
+        welcomeSection.style.display = 'none';
+      } else {
+        welcomeSection.style.display = 'block';
+      }
       
-      let meals = [];
-      let isLoading = false;
-      let hasMore = true;
+      // Initialize calendar
+      renderCalendar(currentYear, currentMonth);
+      renderWeekView();
       
-      // Fetch initial data
-      async function initializeApp() {
-        try {
-          loadingElement.style.display = 'block';
-          
-          // Fetch initial meals
-          await fetchMoreMeals();
-          
-          // Set up infinite scroll
-          window.addEventListener('scroll', handleScroll);
-        } catch (err) {
-          console.error('Error:', err);
-          errorElement.textContent = `Error: ${err.message}`;
-          errorElement.style.display = 'block';
-        } finally {
-          loadingElement.style.display = 'none';
+      // Set up event listeners
+      setupEventListeners();
+    }
+
+    // Set up all event listeners
+    function setupEventListeners() {
+      // Profile circle click
+      profileCircle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        profileDropdown.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking elsewhere
+      document.addEventListener('click', function() {
+        profileDropdown.classList.remove('show');
+      });
+
+      // Edit profile button
+      editProfileBtn.addEventListener('click', function() {
+        profileDropdown.classList.remove('show');
+        profileModal.classList.add('show');
+      });
+
+      // Close modal buttons
+      closeModal.addEventListener('click', function() {
+        profileModal.classList.remove('show');
+      });
+
+      cancelProfile.addEventListener('click', function() {
+        profileModal.classList.remove('show');
+      });
+
+      // Start profile setup
+      startProfileSetup.addEventListener('click', function() {
+        welcomeSection.style.display = 'none';
+        profileModal.classList.add('show');
+      });
+
+      // Save profile form
+      profileForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        saveProfile();
+      });
+
+      // Calendar navigation
+      prevMonthBtn.addEventListener('click', function() {
+        currentMonth--;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
         }
-      }
-      
-      // Handle scroll event for infinite loading
-      function handleScroll() {
-        if (isLoading || !hasMore) return;
-        
-        // Check if we're near the bottom of the page
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-          fetchMoreMeals();
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      nextMonthBtn.addEventListener('click', function() {
+        currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
         }
-      }
-      
-      // Fetch more meals from TheMealDB API
-      async function fetchMoreMeals() {
-        if (isLoading) return;
-        
-        try {
-          isLoading = true;
-          loadingElement.style.display = 'block';
-          errorElement.style.display = 'none';
-          
-          // Fetch 6 random meals at a time
-          const mealPromises = Array.from({ length: 6 }, () => 
-            fetch('https://www.themealdb.com/api/json/v1/1/random.php')
-              .then(res => res.json())
-              .then(data => data.meals[0])
-          );
-          
-          const newMeals = await Promise.all(mealPromises);
-          meals = [...meals, ...newMeals];
-          renderMeals(meals);
-          
-          // In a real app, you might want to implement a way to know when there are no more meals
-          // For this demo, we'll assume there's always more
-          hasMore = true;
-        } catch (err) {
-          console.error('Error:', err);
-          errorElement.textContent = `Error: ${err.message}`;
-          errorElement.style.display = 'block';
-        } finally {
-          isLoading = false;
-          loadingElement.style.display = 'none';
-        }
-      }
-      
-      // Extract ingredients and measurements from meal object
-      function getIngredients(meal) {
-        const ingredients = [];
-        for (let i = 1; i <= 20; i++) {
-          const ingredient = meal[`strIngredient${i}`];
-          const measure = meal[`strMeasure${i}`];
-          if (ingredient && ingredient.trim() !== '') {
-            ingredients.push(`${measure ? measure.trim() + ' ' : ''}${ingredient.trim()}`);
-          }
-        }
-        return ingredients;
-      }
-      
-      // Format instructions into steps
-      function formatInstructions(instructions) {
-        if (!instructions) return [];
-        // Split by new lines or numbers followed by periods
-        return instructions.split('\r\n').filter(step => step.trim() !== '');
-      }
-      
-      // Check if meal is vegetarian
-      function isVegetarian(meal) {
-        const ingredients = getIngredients(meal);
-        const nonVegIngredients = ['chicken', 'beef', 'pork', 'lamb', 'fish', 'seafood', 'meat'];
-        return !ingredients.some(ing => 
-          nonVegIngredients.some(nonVeg => ing.toLowerCase().includes(nonVeg))
-        );
-      }
-      
-      // Render meals to the DOM
-      function renderMeals(mealsToRender) {
-        // Don't clear the container, we're appending
-        if (mealsToRender.length === 0) {
-          recipesContainer.innerHTML = '<p style="grid-column:1/-1;text-align:center;">No meals found</p>';
-          return;
-        }
-        
-        // Get filter values
-        const searchText = searchInput.value.toLowerCase();
-        const typeValue = typeFilter.value;
-        const vegValue = vegFilter.value;
-        
-        // Filter meals
-        const filtered = mealsToRender.filter(meal => {
-          // Search filter
-          const matchesSearch = meal.strMeal.toLowerCase().includes(searchText);
-          
-          // Type filter (matches any save button type)
-          const matchesType = !typeValue || 
-            ['breakfast', 'lunch', 'dinner', 'snacks', 'dessert'].some(
-              type => type.toLowerCase().includes(typeValue.toLowerCase())
-            );
-          
-          // Veg filter
-          let matchesVeg = true;
-          if (vegValue === 'veg') {
-            matchesVeg = isVegetarian(meal);
-          } else if (vegValue === 'non-veg') {
-            matchesVeg = !isVegetarian(meal);
-          }
-          
-          return matchesSearch && matchesType && matchesVeg;
-        });
-        
-        // Clear and render filtered meals
-        recipesContainer.innerHTML = '';
-        filtered.forEach(meal => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          
-          const ingredients = getIngredients(meal);
-          const instructions = formatInstructions(meal.strInstructions);
-          const vegetarian = isVegetarian(meal);
-          
-          card.innerHTML = `
-            <div class="saved-notice">Saved</div>
-            <img src="${meal.strMealThumb}" alt="${meal.strMeal}" class="card-image">
-            <div class="card-content">
-              <h3 class="card-title">${meal.strMeal}</h3>
-              <div class="card-meta">
-                <span>${vegetarian ? 'Vegetarian' : 'Non-Vegetarian'}</span>
-              </div>
-              <div class="tags-container">
-                ${meal.strTags ? meal.strTags.split(',').map(tag => 
-                  `<span class="tag">${tag.trim()}</span>`
-                ).join('') : ''}
-              </div>
-            </div>
-            <div class="card-details">
-              <div class="detail-section">
-                <h4 class="detail-title">Ingredients</h4>
-                <ul class="ingredients-list">
-                  ${ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                </ul>
-              </div>
-              <div class="detail-section">
-                <h4 class="detail-title">Instructions</h4>
-                <ol class="instructions-list">
-                  ${instructions.map((step, i) => `<li>${step}</li>`).join('')}
-                </ol>
-              </div>
-              <div class="detail-section">
-                <h4 class="detail-title">Video</h4>
-                <p><a href="${meal.strYoutube}" target="_blank">Watch on YouTube</a></p>
-              </div>
-              <div class="save-options">
-                <button class="save-btn breakfast-btn" data-id="${meal.idMeal}" data-type="breakfast">Breakfast</button>
-                <button class="save-btn lunch-btn" data-id="${meal.idMeal}" data-type="lunch">Lunch</button>
-                <button class="save-btn dinner-btn" data-id="${meal.idMeal}" data-type="dinner">Dinner</button>
-                <button class="save-btn snacks-btn" data-id="${meal.idMeal}" data-type="snack">Snack</button>
-                <button class="save-btn dessert-btn" data-id="${meal.idMeal}" data-type="dessert">Dessert</button>
-              </div>
-            </div>
-          `;
-          
-          // Toggle details on click
-          card.addEventListener('click', function(e) {
-            if (!e.target.classList.contains('save-btn')) {
-              this.classList.toggle('active');
-            }
-          });
-          
-          // Add save button handlers
-          card.querySelectorAll('.save-btn').forEach(btn => {
-            btn.addEventListener('click', async function(e) {
-              e.stopPropagation();
-              const mealId = this.getAttribute('data-id');
-              const mealType = this.getAttribute('data-type');
-              const mealName = meal.strMeal;
-              
-              try {
-                // Load existing saved meals
-                let savedMeals = JSON.parse(localStorage.getItem('savedMeals')) || {
-                  breakfast: [],
-                  lunch: [],
-                  dinner: [],
-                  snacks: [],
-                  dessert: []
-                };
-                
-                // Add the new meal
-                savedMeals[mealType].push({
-                  id: mealId,
-                  name: mealName,
-                  image: meal.strMealThumb,
-                  vegetarian: isVegetarian(meal)
-                });
-                
-                // Save back to localStorage
-                localStorage.setItem('savedMeals', JSON.stringify(savedMeals));
-                
-                // Visual feedback
-                const originalText = this.textContent;
-                this.textContent = '✓ Saved!';
-                
-                // Show saved notice
-                const notice = this.closest('.card').querySelector('.saved-notice');
-                notice.style.display = 'block';
-                
-                setTimeout(() => {
-                  this.textContent = originalText;
-                }, 2000);
-              } catch (err) {
-                alert('Failed to save meal: ' + err.message);
-              }
-            });
-          });
-          
-          recipesContainer.appendChild(card);
-        });
-      }
-      
-      // Event listeners for filters
-      searchInput.addEventListener('input', () => renderMeals(meals));
-      typeFilter.addEventListener('change', () => renderMeals(meals));
-      vegFilter.addEventListener('change', () => renderMeals(meals));
-      
-      // Initial load
-      initializeApp();
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      // Meal form buttons
+      cancelMealBtn.addEventListener('click', function() {
+        mealFormEl.style.display = 'none';
+      });
+
+      mealTypeEl.addEventListener('change', function() {
+        updateMealOptions(this.value);
+      });
+
+      saveMealBtn.addEventListener('click', function() {
+        saveMeal();
+      });
+    }
+
+  // Save profile to Supabase
+async function saveProfile() {
+  const userId = localStorage.getItem('userId');
+  const profileData = {
+    username: profileUsername.value,
+    diet_preference: profileDiet.value,
+    profile_image: profileImage.value
+  };
+  
+  try {
+    const response = await fetch('/profile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profileData)
     });
+    
+    const savedProfile = await response.json();
+    
+    currentProfile = savedProfile;
+    updateProfileCircle(currentProfile);
+    updateProfileDropdown(currentProfile);
+    profileModal.classList.remove('show');
+    welcomeSection.style.display = 'none';
+    
+    showToast('Profile saved successfully!');
+  } catch (error) {
+    console.error('Error saving profile:', error);
+    showToast('Failed to save profile', 'error');
+  }
+}
+
+    // Update profile circle display
+    function updateProfileCircle(profile) {
+      if (profile.profile_image) {
+        profileCircle.innerHTML = `<img src="${profile.profile_image}" alt="Profile">`;
+      } else {
+        // Use initials if no image
+        const initials = profile.username 
+          ? profile.username.split(' ').map(n => n[0]).join('').toUpperCase()
+          : 'U';
+        profileCircle.innerHTML = initials;
+        profileCircle.style.backgroundColor = getRandomColor();
+      }
+    }
+
+    // Update profile dropdown content
+    function updateProfileDropdown(profile) {
+      let dietClass = 'diet-none';
+      let dietLabel = 'No restrictions';
+      
+      if (profile.diet_preference === 'vegetarian') {
+        dietClass = 'diet-vegetarian';
+        dietLabel = 'Vegetarian';
+      } else if (profile.diet_preference === 'vegan') {
+        dietClass = 'diet-vegan';
+        dietLabel = 'Vegan';
+      }
+      
+      profileDropdownContent.innerHTML = `
+        ${profile.profile_image 
+          ? `<img src="${profile.profile_image}" alt="Profile" class="profile-dropdown-img">` 
+          : `<div class="profile-dropdown-img" style="background: ${getRandomColor()}; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+              ${profile.username ? profile.username.split(' ').map(n => n[0]).join('').toUpperCase() : 'U'}
+             </div>`
+        }
+        <div class="profile-dropdown-name">${profile.username || 'User'}</div>
+        <div class="profile-dropdown-diet ${dietClass}">${dietLabel}</div>
+      `;
+    }
+
+    // Generate a random color
+    function getRandomColor() {
+      const colors = ['#4CAF50', '#2196F3', '#9C27B0', '#FF9800', '#E91E63', '#009688'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // Show notification
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.right = '20px';
+      toast.style.padding = '12px 20px';
+      toast.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
+      toast.style.color = 'white';
+      toast.style.borderRadius = '4px';
+      toast.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+      toast.style.zIndex = '10000';
+      toast.style.animation = 'fadeIn 0.3s';
+      toast.textContent = message;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s';
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+
+    // Calendar functions
+    function renderCalendar(year, month) {
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+      currentMonthEl.textContent = `${monthNames[month]} ${year}`;
+      
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startDay = firstDay.getDay();
+      
+      calendarEl.innerHTML = '';
+      
+      // Day headers
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      dayNames.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        dayHeader.textContent = day;
+        calendarEl.appendChild(dayHeader);
+      });
+      
+      // Empty cells for days before the first of the month
+      for (let i = 0; i < startDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'day empty';
+        calendarEl.appendChild(emptyDay);
+      }
+      
+      // Days of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dateKey = formatDateKey(date);
+        const dayEl = document.createElement('div');
+        dayEl.className = 'day';
+        
+        // Highlight today
+        const today = new Date();
+        if (date.getDate() === today.getDate() && 
+            date.getMonth() === today.getMonth() && 
+            date.getFullYear() === today.getFullYear()) {
+          dayEl.classList.add('today');
+        }
+        
+        // Day number
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = day;
+        dayEl.appendChild(dayNumber);
+        
+        // Add meals if any
+        if (plannedMeals[dateKey] && plannedMeals[dateKey].length > 0) {
+          plannedMeals[dateKey].forEach(meal => {
+            const mealEl = document.createElement('div');
+            mealEl.className = `meal-item ${meal.type}`;
+            mealEl.innerHTML = `
+              ${meal.name}
+              <span class="remove-meal" data-date="${dateKey}" data-type="${meal.type}">✕</span>
+            `;
+            dayEl.appendChild(mealEl);
+          });
+        }
+        
+        // Click event for adding meals
+        dayEl.addEventListener('click', (e) => {
+          if (e.target.classList.contains('remove-meal')) return;
+          
+          selectedDate = date;
+          selectedDateEl.textContent = `${monthNames[month]} ${day}, ${year}`;
+          mealFormEl.style.display = 'block';
+          mealTypeEl.value = 'breakfast';
+          updateMealOptions('breakfast');
+        });
+        
+        calendarEl.appendChild(dayEl);
+      }
+      
+      // Add event listeners to remove buttons
+      document.querySelectorAll('.remove-meal').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const dateKey = this.getAttribute('data-date');
+          const mealType = this.getAttribute('data-type');
+          
+          if (plannedMeals[dateKey]) {
+            plannedMeals[dateKey] = plannedMeals[dateKey].filter(meal => meal.type !== mealType);
+            
+            if (plannedMeals[dateKey].length === 0) {
+              delete plannedMeals[dateKey];
+            }
+            
+            localStorage.setItem('plannedMeals', JSON.stringify(plannedMeals));
+            renderCalendar(year, month);
+            renderWeekView();
+            showToast('Meal removed successfully!');
+          }
+        });
+      });
+    }
+    
+    // Render week view
+    function renderWeekView() {
+      weekViewEl.innerHTML = '';
+      
+      const today = new Date();
+      const currentDay = today.getDay();
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - currentDay);
+      
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(startOfWeek);
+        day.setDate(startOfWeek.getDate() + i);
+        const dateKey = formatDateKey(day);
+        
+        const dayEl = document.createElement('div');
+        dayEl.className = 'week-day';
+        
+        const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][i];
+        const dayNumber = day.getDate();
+        const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][day.getMonth()];
+        
+        dayEl.innerHTML = `<h4>${dayName}<br>${monthName} ${dayNumber}</h4>`;
+        
+        if (plannedMeals[dateKey] && plannedMeals[dateKey].length > 0) {
+          plannedMeals[dateKey].forEach(meal => {
+            const mealEl = document.createElement('div');
+            mealEl.className = `meal-item ${meal.type}`;
+            mealEl.innerHTML = `
+              <strong>${meal.type.charAt(0).toUpperCase() + meal.type.slice(1)}:</strong> ${meal.name}
+              <span class="remove-meal" data-date="${dateKey}" data-type="${meal.type}">✕</span>
+            `;
+            dayEl.appendChild(mealEl);
+          });
+        } else {
+          const emptyEl = document.createElement('div');
+          emptyEl.className = 'empty-day';
+          emptyEl.textContent = 'No meals planned';
+          dayEl.appendChild(emptyEl);
+        }
+        
+        weekViewEl.appendChild(dayEl);
+      }
+    }
+    
+    // Update meal options based on selected type
+    function updateMealOptions(mealType) {
+      mealNameEl.innerHTML = '';
+      
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = '-- Select a meal --';
+      mealNameEl.appendChild(defaultOption);
+      
+      if (savedMeals[mealType] && savedMeals[mealType].length > 0) {
+        savedMeals[mealType].forEach(meal => {
+          const option = document.createElement('option');
+          option.value = meal.name;
+          option.textContent = meal.name;
+          mealNameEl.appendChild(option);
+        });
+      } else {
+        const noMealsOption = document.createElement('option');
+        noMealsOption.value = '';
+        noMealsOption.textContent = 'No saved meals for this type';
+        mealNameEl.appendChild(noMealsOption);
+      }
+    }
+
+    // Save meal to plan
+    function saveMeal() {
+      if (!selectedDate) return;
+      
+      const mealType = mealTypeEl.value;
+      const mealName = mealNameEl.value;
+      
+      if (!mealName) return;
+      
+      const dateKey = formatDateKey(selectedDate);
+      
+      if (!plannedMeals[dateKey]) {
+        plannedMeals[dateKey] = [];
+      }
+      
+      // Check if this meal type already exists for this date
+      const existingIndex = plannedMeals[dateKey].findIndex(meal => meal.type === mealType);
+      
+      if (existingIndex >= 0) {
+        // Replace existing meal
+        plannedMeals[dateKey][existingIndex] = { type: mealType, name: mealName };
+      } else {
+        // Add new meal
+        plannedMeals[dateKey].push({ type: mealType, name: mealName });
+      }
+      
+      localStorage.setItem('plannedMeals', JSON.stringify(plannedMeals));
+      renderCalendar(currentYear, currentMonth);
+      renderWeekView();
+      mealFormEl.style.display = 'none';
+      showToast('Meal saved successfully!');
+    }
+
+    // Helper function to format date as key
+    function formatDateKey(date) {
+      return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    }
+
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
 </html>
