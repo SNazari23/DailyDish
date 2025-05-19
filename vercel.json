@@ -1,9 +1,15 @@
 {
-    "name": "DailyDish",
-    "version": "1.0.0",
-    "dependencies": {
-      "react": "^18.2.0",
-      "next": "^13.4.0"
-    }
-  }
-  
+    "version": 2,
+    "builds": [
+        {
+            "src": "./index.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ]
+}
