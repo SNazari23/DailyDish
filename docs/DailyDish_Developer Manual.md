@@ -1,0 +1,1 @@
+# 📜 Daily Dish Developer Manual 📜
