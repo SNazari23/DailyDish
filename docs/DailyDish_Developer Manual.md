@@ -1,6 +1,6 @@
 # 👩🏻‍💻 Daily Dish Developer Manual 
 
-## 🖌️ System Design 
+# 🖌️ System Design 
 
 DailyDish is a meal planning web application that helps users:
 - Organize weekly meals
@@ -16,20 +16,20 @@ DailyDish is a meal planning web application that helps users:
 
 
 
-###⚙️ Prerequisites
+# ⚙️ Prerequisites
 -Html 
 -Superbase 
 -Javascript
 -CSS
 -
 
-#### 🐱 Setup
+# 🐱 Setup
 Dowland the files on the GitHub repository and run home.html. 
 **Installing**:
--type in terminal "npm install @supabase/supabase-js".  
-- downland files on GitHub repository. 
+-type in a terminal "npm install @supabase/supabase-js".  
+- downland files on the GitHub repository. 
 
-##### 🧪 Testing 
+#  🧪 Testing 
 **Type**:
 1. npm run server  
 2. npm run build 
@@ -38,5 +38,25 @@ Dowland the files on the GitHub repository and run home.html.
 5. npm run test:[unitTestName]
 6. npm run test:profile
 
+# ⛓️ DailyDish API server application
+Base URL: https://www.themealdb.com/ 
+## API Endpoints
+
+### 🔐 User Endpoints
+
+| Method | Endpoint           | Description                     | Auth Required |
+|--------|--------------------|---------------------------------|---------------|
+| `POST` | `/users`           | Register new user               | No            |
+| `POST` | `/users/login`     | Authenticate user               | No            |
+| `GET`  | `/users/me`        | Get current user profile        | Yes           |
+
+### 🍽️ Meal Endpoints
+
+| Method   | Endpoint           | Description                     | Auth Required |
+|----------|--------------------|---------------------------------|---------------|
+| `GET`    | `/meals`           | List all saved meals            | Yes           |
+| `POST`   | `/meals`           | Save new meal                   | Yes           |
+| `GET`    | `/meals/:id`       | Get specific meal details       | Yes           |
+| `DELETE` | `/meals/:id`       | Remove saved meal               | Yes           |
 
 
