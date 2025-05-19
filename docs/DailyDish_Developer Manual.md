@@ -58,4 +58,15 @@ Base URL: https://www.themealdb.com/
 | `GET`    | `/meals/:id`       | Get specific meal details       | Yes           |
 | `DELETE` | `/meals/:id`       | Remove saved meal               | Yes           |
 
+# 😑 Known Issues
+1. Logo Banner & Navigation Button: Inconsistent CSS styling.
+2. Image Uploads: Users must scroll through the Explore page because uploads are currently only supported through links, making it difficult to keep everything within the web frame.
+3. Auto-Save Profile: Users experience difficulties when trying to change their profile.
+
+# 😎 Future Development RoadMap 
+1. Resolving Known Issues.
+2. Grocery List Generator: Generates a grocery list based on user-saved meals, showing the items needed for their weekly meal plan. It also displays stores where the items can be purchased and their prices.
+3. Enhanced Search Filters: Adding more search filters to align with user goals, such as filtering by dietary preferences (e.g., low-calorie diet for weight loss).
+
+ 
 
