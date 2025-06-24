@@ -4,6 +4,9 @@
 
 DailyDish is a meal planner website that helps users organize their daily meals. Users can explore a wide variety of meal inspirations, save their favorite dishes, and easily plan their meals for the day—whether it's breakfast, lunch, dinner, or a quick snack.
 
+#  📸 Project Screenshot 
+## 🏠 Home Page Screenshot 
+
 # 👩🏻‍💻 Project Background
 
 This project is an improved version of a previous project I attempted. The initial project topic was too complex for me to program alone, so I decided to pivot to DailyDish, a project that aligns better with my skills and interests.
