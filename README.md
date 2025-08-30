@@ -1,4 +1,4 @@
-# 🥗DailyDish 🍉
+# 🥗DailyDish 🧃
 
 ## 📌 Project Description
 
